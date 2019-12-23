@@ -21,6 +21,12 @@ fn main() {
 			let task: String = args[2].clone();
 			list.add_new(task.as_str());
 			list.print();
+		},
+		"done" => {
+			let task: String = args[2].clone();
+			let task: i32 = task.trim().parse().unwrap();
+			list.mark_done(task);
+			list.print();
 		}
 		_ => { println!("Unknown Command: {}", command); }
 	}
