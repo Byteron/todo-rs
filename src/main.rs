@@ -16,16 +16,22 @@ fn main() {
 	match command.as_str() {
 		"list" => {
 			list.print();
-		},
+		}
 		"add" => {
 			let task: String = args[2].clone();
 			list.add_new(task.as_str());
 			list.print();
-		},
-		"done" => {
+		}
+		"complete" => {
 			let task: String = args[2].clone();
-			let task: i32 = task.trim().parse().unwrap();
-			list.mark_done(task);
+			let task_id: i32 = task.trim().parse().unwrap();
+			list.mark_completed(task_id, true);
+			list.print();
+		}
+		"incomplete" => {
+			let task: String = args[2].clone();
+			let task_id: i32 = task.trim().parse().unwrap();
+			list.mark_completed(task_id, false);
 			list.print();
 		}
 		_ => { println!("Unknown Command: {}", command); }

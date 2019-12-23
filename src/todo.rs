@@ -41,10 +41,10 @@ impl TodoList {
 		self.add(item);
 	}
 
-	pub fn mark_done(&mut self, id: i32) {
+	pub fn mark_completed(&mut self, id: i32, completed: bool) {
 		self.list.iter_mut()
 			.filter(|item| item.id == id)
-			.for_each(|item| item.completed = true);
+			.for_each(|item| item.completed = completed);
 	}
 
 	pub fn print(&self) {
