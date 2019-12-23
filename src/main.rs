@@ -1,20 +1,13 @@
-use std::env;
-use std::fs::OpenOptions;
-use std::io::prelude::*;
-
 mod todo;
 
-use todo::TodoList;
+use std::env;
 
 fn main() {
-
-	let mut list = load();
-
 	let args: Vec<String> = env::args().collect();
+	
+	if args.len() < 2 { return }
 
-	if args.len() < 2 {
-		return
-	}
+	let mut list = todo::load();
 
 	let command: String = args[1].clone();
 
@@ -47,30 +40,5 @@ fn main() {
 		_ => { println!("Unknown Command: {}", command); }
 	}
 
-	save(list);
-}
-
-fn load() -> TodoList {
-	let mut file = OpenOptions::new()
-		.read(true).write(true).create(true)
-		.open("todo.txt")
-		.unwrap();
-	
-	let mut contents = String::new();	
-	file.read_to_string(&mut contents).expect("Could not read file");
-
-	let list = TodoList::from(contents);
-
-	list
-}
-
-fn save(list: TodoList) {
-	let mut file = OpenOptions::new()
-	.read(true).write(true).create(true)
-	.open("todo.txt")
-	.unwrap();
-
-	file.set_len(0).expect("Could not erase file");
-	file.write_all(list.to_string().as_ref()).expect("Could not write to file.");
-	file.sync_all().expect("Could not sync file.");
+	todo::save(list);
 }

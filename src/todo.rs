@@ -1,3 +1,5 @@
+use std::fs::OpenOptions;
+use std::io::prelude::*;
 
 #[derive(Debug)]
 pub struct TodoItem {
@@ -109,4 +111,29 @@ impl TodoList {
 			item.print();
 		}
 	}
+}
+
+pub fn load() -> TodoList {
+	let mut file = OpenOptions::new()
+		.read(true).write(true).create(true)
+		.open("todo.txt")
+		.unwrap();
+	
+	let mut contents = String::new();	
+	file.read_to_string(&mut contents).expect("Could not read file");
+
+	let list = TodoList::from(contents);
+
+	list
+}
+
+pub fn save(list: TodoList) {
+	let mut file = OpenOptions::new()
+	.read(true).write(true).create(true)
+	.open("todo.txt")
+	.unwrap();
+
+	file.set_len(0).expect("Could not erase file");
+	file.write_all(list.to_string().as_ref()).expect("Could not write to file.");
+	file.sync_all().expect("Could not sync file.");
 }
