@@ -1,6 +1,7 @@
 mod todo;
 
 use std::env;
+use todo::Command;
 
 fn main() {
 	let args: Vec<String> = env::args().collect();
@@ -9,35 +10,40 @@ fn main() {
 
 	let mut list = todo::load();
 
-	let command: String = args[1].clone();
+	let command = match args[1].as_str() {
+		"list" => Command::List,
+		"add" => Command::Add(args[2].clone()),
+		"tick" => Command::Tick(args[2].clone().trim().parse().expect("Failed to parse Argument")),
+		"untick" => Command::Untick(args[2].clone().trim().parse().expect("Failed to parse Argument")),
+		"remove" => Command::Remove(args[2].clone().trim().parse().expect("Failed to parse Argument")),
+		"reset" => Command::Reset,
+		"exit" => Command::Exit,
+		_ => Command::Unknown(args[1].clone()),
+	};
 
-	match command.as_str() {
-		"list" => {
+	match command {
+		Command::List => {
 			list.print();
 		}
-		"add" => {
-			let task: String = args[2].clone();
+		Command::Add(task) => {
 			list.add_new(task.as_str());
 		}
-		"tick" => {
-			let task: String = args[2].clone();
-			let task_id: i32 = task.trim().parse().unwrap();
+		Command::Tick(task_id) => {
 			list.mark_completed(task_id, true);
 		}
-		"untick" => {
-			let task: String = args[2].clone();
-			let task_id: i32 = task.trim().parse().unwrap();
+		Command::Untick(task_id) => {
 			list.mark_completed(task_id, false);
 		}
-		"delete" => {
-			let task: String = args[2].clone();
-			let task_id: i32 = task.trim().parse().unwrap();
+		Command::Remove(task_id) => {
 			list.remove(task_id);
 		}
-		"reset" => {
+		Command::Reset => {
 			list.reset();
 		}
-		_ => { println!("Unknown Command: {}", command); }
+		Command::Unknown(command) => {
+			println!("Unknown Command {}", command);
+		}
+		Command::Exit => {},
 	}
 
 	todo::save(list);
