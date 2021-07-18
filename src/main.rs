@@ -1,7 +1,8 @@
+mod command;
 mod todo;
 
+use command::Command;
 use std::env;
-use todo::Command;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -12,34 +13,7 @@ fn main() {
 
     let mut list = todo::load();
 
-    let command = match args[1].as_str() {
-        "list" => Command::List,
-        "add" => Command::Add(args[2].clone()),
-        "tick" => Command::Tick(
-            args[2]
-                .clone()
-                .trim()
-                .parse()
-                .expect("Failed to parse Argument"),
-        ),
-        "untick" => Command::Untick(
-            args[2]
-                .clone()
-                .trim()
-                .parse()
-                .expect("Failed to parse Argument"),
-        ),
-        "remove" => Command::Remove(
-            args[2]
-                .clone()
-                .trim()
-                .parse()
-                .expect("Failed to parse Argument"),
-        ),
-        "reset" => Command::Reset,
-        "exit" => Command::Exit,
-        _ => Command::Unknown(args[1].clone()),
-    };
+    let command = command::parse(args);
 
     match command {
         Command::List => {

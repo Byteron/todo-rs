@@ -1,17 +1,6 @@
 use std::fs::OpenOptions;
 use std::io::prelude::*;
 
-pub enum Command {
-    List,
-    Add(String),
-    Remove(i32),
-    Tick(i32),
-    Untick(i32),
-    Reset,
-    Exit,
-    Unknown(String),
-}
-
 #[derive(Debug)]
 pub struct TodoItem {
     pub id: i32,
